@@ -1,26 +1,34 @@
-import './globals.css';
-import localFont from "next/font/local";
+"use client";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+import { useEffect } from "react";
+import "./globals.css";
+import LocomotiveScroll from "locomotive-scroll";
+import "locomotive-scroll/dist/locomotive-scroll.css"; // Correct Locomotive Scroll CSS import
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
+  useEffect(() => {
+    // Initialize Locomotive Scroll
+    const scrollContainer = document.querySelector("[data-scroll-container]");
+
+    const scroll = new LocomotiveScroll({
+      el: scrollContainer,
+      smooth: true,
+      inertia: 0.75, // Adjust for the effect of inertia
+    });
+
+    return () => {
+      if (scroll) scroll.destroy(); // Cleanup on component unmount
+    };
+  }, []);
+
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-900 text-white`}>
-        {children}
+      <body>
+        <div data-scroll-container>{children}</div>
       </body>
     </html>
   );
